@@ -674,10 +674,11 @@ const ProfileHeader = ({
   });
 
   const displayFollowersCount = React.useMemo(() => {
+    if (isAdmin) return profile.followersCount;
     return isFollowing 
       ? updateFormattedCount(profile.followersCount, 1) 
       : profile.followersCount;
-  }, [profile.followersCount, isFollowing]);
+  }, [profile.followersCount, isFollowing, isAdmin]);
 
   const handleFollow = () => {
     const nextState = !isFollowing;
