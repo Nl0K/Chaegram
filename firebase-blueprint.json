@@ -1,0 +1,104 @@
+{
+  "entities": {
+    "Profile": {
+      "title": "Profile",
+      "description": "User profile data",
+      "type": "object",
+      "properties": {
+        "username": { "type": "string" },
+        "name": { "type": "string" },
+        "bio": { "type": "string" },
+        "followedByUsers": { "type": "array", "items": { "type": "string" } },
+        "followedByCount": { "type": "number" },
+        "postCount": { "type": "number" },
+        "followersCount": { "type": "string" },
+        "followingCount": { "type": "string" },
+        "fontFamily": { "type": "string", "enum": ["nanum", "sans", "serif", "instagram"] },
+        "website": { "type": "string" },
+        "avatar": { "type": "string" }
+      },
+      "required": ["username", "name"]
+    },
+    "Post": {
+      "title": "Post",
+      "description": "Instagram-style post",
+      "type": "object",
+      "properties": {
+        "img": { "type": "string" },
+        "likes": { "type": "number" },
+        "caption": { "type": "string" },
+        "time": { "type": "string" },
+        "commentsCount": { "type": "number" },
+        "comments": { "type": "array", "items": { "$ref": "Comment" } }
+      },
+      "required": ["img", "likes", "caption"]
+    },
+    "Comment": {
+      "title": "Comment",
+      "description": "Post comment",
+      "type": "object",
+      "properties": {
+        "user": { "type": "string" },
+        "avatar": { "type": "string" },
+        "text": { "type": "string" },
+        "time": { "type": "string" },
+        "likes": { "type": "number" },
+        "isLiked": { "type": "boolean" }
+      },
+      "required": ["user", "text"]
+    },
+    "Chat": {
+      "title": "Chat",
+      "description": "Direct message chat thread",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "avatar": { "type": "string" },
+        "status": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "isOnline": { "type": "boolean" },
+        "messages": { "type": "array", "items": { "$ref": "Message" } }
+      },
+      "required": ["name"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Chat message",
+      "type": "object",
+      "properties": {
+        "sender": { "type": "string" },
+        "text": { "type": "string" },
+        "time": { "type": "string" }
+      },
+      "required": ["sender", "text"]
+    },
+    "Highlight": {
+      "title": "Highlight",
+      "description": "Profile highlight bubble",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "img": { "type": "string" }
+      },
+      "required": ["title", "img"]
+    }
+  },
+  "firestore": {
+    "/profiles/{profileId}": {
+      "schema": "Profile",
+      "description": "User profiles"
+    },
+    "/posts/{postId}": {
+      "schema": "Post",
+      "description": "Post collection"
+    },
+    "/chats/{chatId}": {
+      "schema": "Chat",
+      "description": "DM chat threads"
+    },
+    "/highlights/{highlightId}": {
+      "schema": "Highlight",
+      "description": "Profile highlights"
+    }
+  }
+}
