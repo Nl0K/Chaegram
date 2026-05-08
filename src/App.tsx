@@ -673,6 +673,12 @@ const ProfileHeader = ({
     return localStorage.getItem(`following_${profile.username}`) === 'true';
   });
 
+  const displayFollowersCount = React.useMemo(() => {
+    return isFollowing 
+      ? updateFormattedCount(profile.followersCount, 1) 
+      : profile.followersCount;
+  }, [profile.followersCount, isFollowing]);
+
   const handleFollow = () => {
     const nextState = !isFollowing;
     setIsFollowing(nextState);
@@ -763,7 +769,7 @@ const ProfileHeader = ({
               <span className="font-bold">{profile.postCount}</span> <span className="text-brand-muted">게시물</span>
             </div>
             <div className="flex flex-col md:flex-row items-center gap-1 text-sm md:text-base">
-              <span className="font-bold">{profile.followersCount}</span> <span className="text-brand-muted">팔로워</span>
+              <span className="font-bold">{displayFollowersCount}</span> <span className="text-brand-muted">팔로워</span>
             </div>
             <div className="flex flex-col md:flex-row items-center gap-1 text-sm md:text-base">
               <span className="font-bold">{profile.followingCount}</span> <span className="text-brand-muted">팔로잉</span>
@@ -1735,7 +1741,7 @@ const DMOverlay = ({
 };
 
 
-const updateFormattedCount = (current: string, delta: number): string => {
+function updateFormattedCount(current: string, delta: number): string {
   if (!current) return delta > 0 ? "1" : "0";
   
   const multiplierMatch = current.match(/[kKMm]$/);
@@ -1764,7 +1770,7 @@ const updateFormattedCount = (current: string, delta: number): string => {
     return val + 'k';
   }
   return Math.floor(totalValue).toString();
-};
+}
 
 const LockScreen = ({ onUnlock, isReady }: { onUnlock: () => void, isReady: boolean }) => {
   const [time, setTime] = useState(new Date());
@@ -2120,6 +2126,8 @@ export default function App() {
   };
 
   const handleFollowChange = async (isFollowing: boolean) => {
+    // Only persist if admin, otherwise we just use the local state overlay.
+    if (!isAdmin) return;
     try {
       const delta = isFollowing ? 1 : -1;
       const nextCount = updateFormattedCount(profile.followersCount, delta);
